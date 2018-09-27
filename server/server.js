@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 //POST
 app.post('/todos', (req, res) => {
-    var todo = new Todo({
+    let todo = new Todo({
         text: req.body.text
     });
 
@@ -45,6 +45,23 @@ app.get('/todos/:id', (req, res) => {
         return res.status(404).send();
     }
         res.send({todo});
+    }).catch((e) => {res.status(400).send(e)});
+});
+
+// DELETE route
+
+app.delete('/todos/:id', (req, res) => {
+    let id = req.params.id;
+
+    if(!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    Todo.findByIdAndRemove(id).then((todo) => {
+        if(!todo) {
+            return res.status(404).send();
+        }
+        res.status(200).send({todo});
     }).catch((e) => {res.status(400).send()});
 });
 
