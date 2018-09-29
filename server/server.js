@@ -14,7 +14,7 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-//POST
+//POST /todos
 app.post('/todos', (req, res) => {
     let todo = new Todo({
         text: req.body.text
@@ -27,6 +27,8 @@ app.post('/todos', (req, res) => {
     });
 });
 
+// GET /todos
+
 app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
         res.send({todos})
@@ -35,7 +37,7 @@ app.get('/todos', (req, res) => {
     });
 });
 
-// GET /todos/1234323
+// GET /todos/:id
 app.get('/todos/:id', (req, res) => {
     let id = req.params.id;
 
@@ -94,6 +96,34 @@ app.patch('/todos/:id', (req, res) => {
     }).catch((e) => {
         res.status(400).send();
     })
+});
+
+// POST /users
+
+app.post('/users', (req, res) => {
+    let body = _.pick(req.body, ['email', 'password']);
+    let user = new User(body);
+
+    User.findByToken
+    user.generateAuthToken
+
+user.save().then(() => {
+    return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send(user);
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+});
+
+// GET /users
+
+app.get('/users', (req, res) => {
+    User.find().then((users) => {
+        res.send({users})
+    }, (e) => {
+        res.status(400).send(e);
+    });
 });
 
 
