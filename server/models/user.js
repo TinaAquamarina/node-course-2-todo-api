@@ -17,17 +17,17 @@ var UserSchema = new mongoose.Schema({
     },
     password : {
         type: String,
-        require: true,
+        required: true,
         minlength: 6
     },
     tokens: [{
         access: {
             type: String,
-            require: true
+            required: true
         },
         token: {
             type: String,
-            require: true
+            required: true
         }
     }]
 });
@@ -48,6 +48,23 @@ UserSchema.methods.generateAuthToken = function () {
 
     return user.save().then(() => {
         return token;
+    });
+};
+
+UserSchema.statics.findByToken = function (token) {
+    let User = this;
+    let decoded;
+
+    try {
+        decoded = jwt.verify(token, 'abc123');
+    } catch (e) {
+        return Promise.reject();
+    }
+
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
     });
 };
 
