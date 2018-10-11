@@ -197,8 +197,8 @@ describe('GET /users/me', () => {
     });
 });
 
-describe('POST /users', (done) => {
-    it('should create a user', () => {
+describe('POST /users', () => {
+    it('should create a user', (done) => {
         let email = 'example@example.com';
         let password = '123qwe';
 
@@ -235,7 +235,7 @@ describe('POST /users', (done) => {
         .end(done);
     });
 
-    it('should not create user if email in use', () => {
+    it('should not create user if email in use', (done) => {
         request(app)
         .post('/users')
         .send({
